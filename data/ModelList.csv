@@ -1,0 +1,10 @@
+Code,Model ID,Institutions,Country,ECS,Historical,ssp245
+AC,ACCESS-ESM1-5,Commonwealth Scientific and Industrial Research Organisation,Australia,3.9,3,10
+BC,BCC-CSM2-MR,Beijing Climate Center,China,3.3,3,1
+CN,CNRM-ESM2-1,CNRM (Centre National de Recherches Meteorologiques) and CERFACS (Centre Europeen de Recherche et de Formation Avancee en Calcul Scientifique),France,4.8,11,5
+EC,EC-Earth3,EC-Earth Consortium,Europe,4.3,5,5
+GF,GFDL-ESM4,"National Oceanic and Atmospheric Administration, Geophysical Fluid Dynamics Laboratory",USA,2.7,3,3
+GI,GISS-E2-1-G,Goddard Institute for Space Studies,USA,2.7,4,4
+MI,MIROC6,"JAMSTEC (Japan Agency for Marine-Earth Science and Technology), AORI (Atmosphere and Ocean Research Institute), NIES (National Institute for Environmental Studies), and R-CCS (RIKEN Center for Computational Science)",Japan,2.6,10,3
+MP,MPI-ESM1-2-HR,Max Planck Institute for Meteorology,Germany,3,8,2
+MR,MRI-ESM2-0,Meteorological Research Institute,Japan,3.1,5,5
