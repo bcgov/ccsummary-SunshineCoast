@@ -1,5 +1,5 @@
-# ccsummary-FLP
-A draft app for visualization of climate change in defined areas
+# ccsummary-SunshineCoast
+An app for visualization of climate change in the Sunshine Coast FLP area
 
 Copyright 2021 Province of British Columbia
 
