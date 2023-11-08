@@ -15,9 +15,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# # Tried downgrading rsconnect during deployment troubleshooting
 # install.packages("devtools")
 # packageVersion("rsconnect")
 # devtools::install_version("rsconnect", version = "1.0.0")
+# packageVersion("rgdal")
 
 # library(shiny)
 library(RColorBrewer)
@@ -26,17 +28,17 @@ library(scales)
 library(plotrix)
 library(car)
 library(DT)
-library(rgdal)
+# library(rgdal)
 library(mapview)
 library(leaflet)
 library(leafem)
 library(htmlwidgets)
 library(sf)
 library(raster)
-library(sp)
 
-# Increase the maximum upload size to 160 MB 
-options(shiny.maxRequestSize = 160*1024^2)
+
+# Increase the maximum upload size to 60 MB 
+options(shiny.maxRequestSize = 60*1024^2)
 
 studyarea <- "Sunshine"
 
