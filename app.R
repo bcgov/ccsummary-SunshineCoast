@@ -515,7 +515,7 @@ ui <- fluidPage(
 
                                             radioButtons("spp.focal.2.B2", inline = TRUE,
                                                          label = "Select a species for ensemble detail",
-                                                         choices = as.list(c("none", spps.native.B2)),
+                                                         choices = as.list(c("none", spps.all.B2)),
                                                          selected = "none")
                                           ),
 
@@ -524,7 +524,7 @@ ui <- fluidPage(
 
                                             radioButtons("spp.focal.2.C4", inline = TRUE,
                                                          label = "Select a species for ensemble detail",
-                                                         choices = as.list(c("none", spps.native.C4)),
+                                                         choices = as.list(c("none", spps.all.C4)),
                                                          selected = "none")
                                           ),
 
@@ -533,7 +533,7 @@ ui <- fluidPage(
 
                                             radioButtons("spp.focal.2.D6", inline = TRUE,
                                                          label = "Select a species for ensemble detail",
-                                                         choices = as.list(c("none", spps.native.D6)),
+                                                         choices = as.list(c("none", spps.all.D6)),
                                                          selected = "none")
                                           ),
                                         ),
