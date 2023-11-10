@@ -28,8 +28,7 @@ library(scales)
 library(plotrix)
 library(car)
 library(DT)
-library(rgdal)
-library(mapview)
+# library(mapview)
 library(leaflet)
 library(leafem)
 library(htmlwidgets)
@@ -50,11 +49,11 @@ scenario.names=c("SSP1-2.6", "SSP2-4.5", "SSP3-7.0")
 
 proj.year.names=c("2001-2020", "2021-2040", "2041-2060", "2061-2080", "2081-2100")
 
-bdy <- readOGR(dsn = paste("bdy/bdy", studyarea, "shp", sep="."))
-P4S.epsg <- CRS ("+init=epsg:4326") # web mercator
-bdy <- spTransform(bdy, P4S.epsg)
+bdy <- st_read(dsn = paste("bdy/bdy", studyarea, "shp", sep="."))
+P4S.epsg <- st_crs("+init=epsg:4326") # web mercator
+bdy <- st_transform(bdy, P4S.epsg)
 
-bbox <- as.vector(unlist(extent(bdy)))
+bbox <- as.vector(st_bbox(bdy))
 
 options(scipen=999)
 ## Load the input data
@@ -674,7 +673,7 @@ server <- function(input, output, session) {
       addTiles() %>%
       # addProviderTiles("Esri.WorldImagery", group = "Satellite view") %>%
       # addProviderTiles("Esri.WorldTerrain", group = "Terrain only") %>%
-      fitBounds(lng1 = bbox[1], lat1 = bbox[3], lng2 = bbox[2], lat2 = bbox[4]) %>%
+      fitBounds(lng1 = bbox[1], lat1 = bbox[2], lng2 = bbox[3], lat2 = bbox[4]) %>%
       # addLayersControl(
       #   baseGroups = c("Base map", "Terrain only", "Satellite view"),
       #   options = layersControlOptions(collapsed = FALSE),
@@ -741,7 +740,8 @@ server <- function(input, output, session) {
       if(input$mapspp==1){
         values(X) <- NA
         if(spp.focal!="none") {
-          suit <- SuitLookup$ESuit[which(SuitLookup$Spp==spp.focal)][match(as.vector(unlist(SiteLookup[which(names(SiteLookup)==edatope)])), SuitLookup$SS_NoSpace[which(SuitLookup$Spp==spp.focal)])]
+          spp.simple <- substring(spp.focal, 1, nchar(spp.focal) - 1)
+          suit <- SuitLookup$ESuit[which(SuitLookup$Spp==spp.simple)][match(as.vector(unlist(SiteLookup[which(names(SiteLookup)==edatope)])), SuitLookup$SS_NoSpace[which(SuitLookup$Spp==spp.simple)])]
           if(input$maptype==3){
             if(gcm.focal=="ensemble"){
               suit.ref <- suit[match(levels.bgc[values(bgc.pred.ref)], SiteLookup$BGC)]
@@ -1640,7 +1640,7 @@ server <- function(input, output, session) {
       addProviderTiles("Esri.WorldImagery", group = "Satellite view") %>%
       addProviderTiles("Esri.WorldTerrain", group = "Terrain only") %>%
       addProviderTiles("Esri.WorldTopoMap", group = "Base map") %>%
-      fitBounds(lng1 = extent(bgc.simple)[1], lat1 = extent(bgc.simple)[3], lng2 = extent(bgc.simple)[2], lat2 = extent(bgc.simple)[4]) %>%
+      fitBounds(lng1 = extent(bgc.simple)[1], lat1 = extent(bgc.simple)[2], lng2 = extent(bgc.simple)[3], lat2 = extent(bgc.simple)[4]) %>%
       addLayersControl(
         baseGroups = c("Base map", "Terrain only", "Satellite view"),
         options = layersControlOptions(collapsed = FALSE),
