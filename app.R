@@ -19,7 +19,6 @@
 # install.packages("devtools")
 # packageVersion("rsconnect")
 # devtools::install_version("rsconnect", version = "1.0.0")
-# packageVersion("rgdal")
 
 # library(shiny)
 library(RColorBrewer)
@@ -34,7 +33,7 @@ library(leafem)
 library(htmlwidgets)
 library(sf)
 library(raster)
-
+library(markdown)
 
 # Increase the maximum upload size to 60 MB 
 options(shiny.maxRequestSize = 60*1024^2)
@@ -205,7 +204,6 @@ levels.bgc <- read.csv("data/levels.bgc.csv")[,1]
     bgc.expansion <- bgc.expansion[,-small] #remove small units and assign to permanent table
 
 
-
 ## SPECIES FEASIBILITIES
 SiteLookup <- read.csv("data/SiteLookup.csv", stringsAsFactors = F)
 SuitLookup <- read.csv("data/SuitLookup.csv", stringsAsFactors = F)
@@ -317,16 +315,15 @@ ui <- fluidPage(
                             });
                             ')),
 
-
                                radioButtons("type", inline = FALSE,
                                             label = "Choose the type of map",
                                             # choices = list("Climate variables" = 1, "Biogeoclimatic units" = 2),
                                             choices = list("Climate variables" = 1, "Biogeoclimatic units" = 2, "Species feasibility" = 3),
                                             selected = 2),
 
-                               # sliderInput("transparency", label = "Layer transparency", min = 0,
-                               #             max = 1, value = 0.7),
-                               #
+                               sliderInput("transparency", label = "Layer transparency", min = 0,
+                                           max = 1, value = 0.7),
+
                                radioButtons("maptype",
                                             label = "Choose a time period",
                                             choices = list("Reference (1961-1990)" = 1, "Recent (2001-2020)" = 2, "Future" = 3),
@@ -569,7 +566,7 @@ ui <- fluidPage(
                              )
                       )
              ),
-
+             
              tabPanel("About",
 
                       includeMarkdown("about.Rmd"),
@@ -595,7 +592,7 @@ ui <- fluidPage(
              tabPanel("Find-a-BEC",
                       sidebarLayout(
                         sidebarPanel(
-                          helpText("Choose a BGC zone or subzone-variant to show it on the map"),
+                          helpText("Choose a BGC zone or subzone-variant to display on the map"),
 
                           tags$head(tags$script('$(document).on("shiny:connected", function(e) {
                             Shiny.onInputChange("innerWidth", window.innerWidth);
@@ -666,7 +663,7 @@ ui <- fluidPage(
 # Define server logic ----
 server <- function(input, output, session) {
 
-  output$map <- renderLeaflet({
+    output$map <- renderLeaflet({
 
 
     leaflet() %>%
@@ -694,7 +691,7 @@ server <- function(input, output, session) {
     gcm.focal <- input$gcm.focal
     scenario <- "ssp245"
     proj.year <-  proj.years[as.numeric(input$proj.year)+1]
-    # transparency <- input$transparency
+    transparency <- input$transparency
 
     if(input$maptype==1) X <- bgc.pred.ref
     if(input$maptype==2) X <- bgc.pred.2001
@@ -715,7 +712,7 @@ server <- function(input, output, session) {
 
       leafletProxy("map") %>%
         addProviderTiles("Esri.WorldTopoMap", group = "Base map") %>%
-        addRasterImage(X, colors = ColScheme, method="ngb", maxBytes = 6 * 1024 * 1024)%>%
+        addRasterImage(X, colors = ColScheme, method="ngb", opacity = transparency, maxBytes = 6 * 1024 * 1024)%>%
         addPolygons(data=bdy, fillColor = NA, color="black", smoothFactor = 0.2, fillOpacity = 0, weight=2)
 
     }
@@ -762,7 +759,7 @@ server <- function(input, output, session) {
         }
         leafletProxy("map") %>%
           addProviderTiles("Esri.WorldTopoMap", group = "Base map") %>%
-          addRasterImage(X, colors =  ColScheme.suit, method="ngb", maxBytes = 6 * 1024 * 1024)%>%
+          addRasterImage(X, colors =  ColScheme.suit, method="ngb", opacity = transparency, maxBytes = 6 * 1024 * 1024)%>%
           addPolygons(data=bdy, fillColor = NA, color="black", smoothFactor = 0.2, fillOpacity = 0, weight=2)
       }
       if(input$mapspp==2){
@@ -771,7 +768,7 @@ server <- function(input, output, session) {
           if(spp.focal!="none") X <- raster(paste("data/Spp.ChangeSuit", studyarea, spp.focal, edatope, scenario, proj.year, "tif", sep="."))
           leafletProxy("map") %>%
             addProviderTiles("Esri.WorldTopoMap", group = "Base map") %>%
-            addRasterImage(X, colors =  ColScheme.change, method="ngb", maxBytes = 6 * 1024 * 1024)%>%
+            addRasterImage(X, colors =  ColScheme.change, method="ngb", opacity = transparency, maxBytes = 6 * 1024 * 1024)%>%
             addPolygons(data=bdy, fillColor = NA, color="black", smoothFactor = 0.2, fillOpacity = 0, weight=2)
         }
       }
@@ -781,7 +778,7 @@ server <- function(input, output, session) {
           if(spp.focal!="none") X <- raster(paste("data/Spp.binary", studyarea, spp.focal, edatope, scenario, proj.year, "tif", sep="."))
           leafletProxy("map") %>%
             addProviderTiles("Esri.WorldTopoMap", group = "Base map") %>%
-            addRasterImage(X, colors =  ColScheme.binary, method="ngb", maxBytes = 6 * 1024 * 1024)%>%
+            addRasterImage(X, colors =  ColScheme.binary, method="ngb", opacity = transparency, maxBytes = 6 * 1024 * 1024)%>%
             addPolygons(data=bdy, fillColor = NA, color="black", smoothFactor = 0.2, fillOpacity = 0, weight=2)
         } # end if(input$maptype==3)
       }
@@ -867,7 +864,7 @@ server <- function(input, output, session) {
       gcm.focal <- input$gcm.focal
       scenario <- "ssp245"
       proj.year <-  proj.years[as.numeric(input$proj.year)+1]
-      # transparency <- input$transparency
+      transparency <- input$transparency
 
       if(input$type!=3){
 
@@ -1125,11 +1122,6 @@ server <- function(input, output, session) {
     }
   )
 
-
-
-
-
-
   # Raster levels download
   output$downloadLevels <- downloadHandler(
     filename =  "levels.bgc.csv",
@@ -1138,9 +1130,6 @@ server <- function(input, output, session) {
       write.csv(levels.bgc, file, row.names=FALSE)
     }
   )
-
-
-
 
   ## Plot window (done as a function so that the user can export)
   scatterPlot <- function() {
